@@ -33,9 +33,9 @@ Other software dependencies:
 
    * java 1.8
 
-   * samtools
+   * samtools 1.8-20-g4ff8062
 
-   * gtf2gff.pl from AUGUSTUS
+   * gtf2gff.pl from AUGUSTUS 3.3.3 (https://github.com/Gaius-Augustus/Augustus)
 
 GUSHR runs a GeMoMa.jar file that is supplied with GUSHR. This GeMoMa.jar file was originally created by Jens Keilwagen et al. with Java 1.8 (http://www.jstacs.de/index.php/GeMoMa#Download, https://github.com/Jstacs/Jstacs) and is here re-distributed. You have the option to specify a different (e.g. more recent) GeMoMa.jar file when calling GUSHR but compatibility is then not guaranteed.
 
