@@ -10,7 +10,7 @@ Katharina J. Hoff, University of Greifswald, Germany, katharina.hoff@uni-greifsw
 
 ## Authors of GUSHR:
 
-Katharina J. Hoff<sup name="aff1">[a, ](#aff1)</sup><sup name="aff2">[b](#aff2)</sup> and Jens Keilwagen<sup name="aff3">[c](#aff3)</sup>
+Katharina J. Hoff<sup name="aff1">[a, ](#aff1)</sup><sup name="aff2">[b](#aff2)</sup>, Mario Stanke <sup name="aff1">[a, ](#aff1)</sup><sup name="aff2">[b](#aff2)</sup> and Jens Keilwagen<sup name="aff3">[c](#aff3)</sup>
 
 <b id="aff1">[a]</b> University of Greifswald, Institute for Mathematics and Computer Science, Walther-Rathenau-Str. 47, 17489 Greifswald, Germany
 
@@ -37,13 +37,15 @@ Other software dependencies:
 
    * gtf2gff.pl from AUGUSTUS
 
-GUSHR runs a GeMoMa.jar file that is supplied with GUSHR.
+GUSHR runs a GeMoMa.jar file that is supplied with GUSHR. This GeMoMa.jar file was originally created by Jens Keilwagen et al. with Java 1.8 (http://www.jstacs.de/index.php/GeMoMa#Download, https://github.com/Jstacs/Jstacs) and is here re-distributed. You have the option to specify a different (e.g. more recent) GeMoMa.jar file when calling GUSHR but compatibility is then not guaranteed.
 
 ## Test GUSHR
 
 First, you need to retrieve an RNA-Seq example file that is not included on github due to its size:
 
     wget http://bioinf.uni-greifswald.de/bioinf/braker/RNAseq.bam
+
+(or: `cd example; ./download_rnaseq.sh`).
 
 After that, and if all software requirements are satisfied, you can test GUSHR:
 
