@@ -400,7 +400,10 @@ def gtf_filter_complete(gtf_file):
                             if gid in has_both_gids:
                                 compl_handle.write(line)
                         elif re.search(r'\ttranscript\t', line):
-                            txid = re.search(r'\t([^\t]+)\n', line).group(1)
+                            if re.search('\ttranscript_id \"[^"]+\"', line):
+                                txid = re.search('\ttranscript_id \"([^"]+)\"', line).group(1)
+                            else:
+                                txid = re.search(r'\t([^\t]+)\n', line).group(1)
                             if txid in has_both:
                                 compl_handle.write(line)
                         elif re.search(r'transcript_id "[^"]+";', line):
@@ -653,45 +656,46 @@ def merge_original_with_utrs(original_gtf, utr_gtf):
     try:
         with open(all_gtf, 'r') as all_handle:
             for line in all_handle:
-                txid = re.search(r'transcript_id \"([^"]+)\"', line).group(1)
-                gid = re.search(r'gene_id \"([^"]+)\"', line).group(1)
-                if not gid in genes:
-                    genes[gid] = {}
-                if not 'txs' in genes[gid]:
-                    genes[gid]['txs'] = {}
-                if not txid in genes[gid]['txs']:
-                    genes[gid]['txs'][txid] = {}
-                if not 'lines' in genes[gid]['txs'][txid]:
-                    genes[gid]['txs'][txid]['lines'] = []
-                if not re.search(r'\texon\t', line) and not re.search(r'\tintron\t', line):
-                    genes[gid]['txs'][txid]['lines'].append(line)
-                fields = re.split(r'\t', line)
-                # find gene boundaries
-                if not 'gene' in genes[gid]:
-                    genes[gid]['gene'] = {}
-                if not 'start' in genes[gid]['gene']:
-                    genes[gid]['gene']['start'] = fields[3]
-                    genes[gid]['gene']['seq'] = fields[0]
-                    genes[gid]['gene']['strand'] = fields[6]
-                elif fields[3] < genes[gid]['gene']['start']:
-                    genes[gid]['gene']['start'] = fields[3]
-                if not 'end' in genes[gid]['gene']:
-                    genes[gid]['gene']['end'] = fields[4]
-                elif fields[4] > genes[gid]['gene']['end']:
-                    genes[gid]['gene']['end'] = fields[4]
-                # find tx boundaries
-                if not 'tx' in genes[gid]['txs'][txid]:
-                    genes[gid]['txs'][txid]['tx'] = {}
-                if not 'start' in genes[gid]['txs'][txid]['tx']:
-                    genes[gid]['txs'][txid]['tx']['start'] = fields[3]
-                    genes[gid]['txs'][txid]['tx']['seq'] = fields[0]
-                    genes[gid]['txs'][txid]['tx']['strand'] = fields[6]
-                elif fields[3] < genes[gid]['txs'][txid]['tx']['start']:
-                    genes[gid]['txs'][txid]['tx']['start'] = fields[3]
-                if not 'end' in genes[gid]['txs'][txid]['tx']:
-                    genes[gid]['txs'][txid]['tx']['end'] = fields[4]
-                elif fields[4] > genes[gid]['txs'][txid]['tx']['end']:
-                    genes[gid]['txs'][txid]['tx']['end'] = fields[4]
+                if not(re.search(r'^#', line)):
+                    txid = re.search(r'transcript_id \"([^"]+)\"', line).group(1)
+                    gid = re.search(r'gene_id \"([^"]+)\"', line).group(1)
+                    if not gid in genes:
+                        genes[gid] = {}
+                    if not 'txs' in genes[gid]:
+                        genes[gid]['txs'] = {}
+                    if not txid in genes[gid]['txs']:
+                        genes[gid]['txs'][txid] = {}
+                    if not 'lines' in genes[gid]['txs'][txid]:
+                        genes[gid]['txs'][txid]['lines'] = []
+                    if not re.search(r'\texon\t', line) and not re.search(r'\tintron\t', line):
+                        genes[gid]['txs'][txid]['lines'].append(line)
+                    fields = re.split(r'\t', line)
+                    # find gene boundaries
+                    if not 'gene' in genes[gid]:
+                        genes[gid]['gene'] = {}
+                    if not 'start' in genes[gid]['gene']:
+                        genes[gid]['gene']['start'] = fields[3]
+                        genes[gid]['gene']['seq'] = fields[0]
+                        genes[gid]['gene']['strand'] = fields[6]
+                    elif fields[3] < genes[gid]['gene']['start']:
+                        genes[gid]['gene']['start'] = fields[3]
+                    if not 'end' in genes[gid]['gene']:
+                        genes[gid]['gene']['end'] = fields[4]
+                    elif fields[4] > genes[gid]['gene']['end']:
+                        genes[gid]['gene']['end'] = fields[4]
+                    # find tx boundaries
+                    if not 'tx' in genes[gid]['txs'][txid]:
+                        genes[gid]['txs'][txid]['tx'] = {}
+                    if not 'start' in genes[gid]['txs'][txid]['tx']:
+                        genes[gid]['txs'][txid]['tx']['start'] = fields[3]
+                        genes[gid]['txs'][txid]['tx']['seq'] = fields[0]
+                        genes[gid]['txs'][txid]['tx']['strand'] = fields[6]
+                    elif fields[3] < genes[gid]['txs'][txid]['tx']['start']:
+                        genes[gid]['txs'][txid]['tx']['start'] = fields[3]
+                    if not 'end' in genes[gid]['txs'][txid]['tx']:
+                        genes[gid]['txs'][txid]['tx']['end'] = fields[4]
+                    elif fields[4] > genes[gid]['txs'][txid]['tx']['end']:
+                        genes[gid]['txs'][txid]['tx']['end'] = fields[4]
     except IOError:
         frameinfo = getframeinfo(currentframe())
         print('Error in file ' + frameinfo.filename + ' at line ' +
@@ -729,6 +733,7 @@ def merge_original_with_utrs(original_gtf, utr_gtf):
 
 
 ''' ******************* END FUNCTIONS *************************************'''
+
 
 bedgraph, introns = bam_to_bedgraph(args.bam)
 
